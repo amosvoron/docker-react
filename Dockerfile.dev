@@ -1,0 +1,19 @@
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+
+# Needed to avoid EACCES (access denied) error
+# when npm user cannot write into node_modules
+# created by docker's root user.
+
+RUN mkdir node_modules
+RUN chown node node_modules
+RUN chmod 777 -R node_modules
+
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start"]
